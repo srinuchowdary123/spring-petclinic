@@ -1,0 +1,46 @@
+---
+pool:
+  name: 'Azure Pipelines'
+  vmImage: ubuntu-latest
+
+trigger:
+  - main
+
+
+
+Parameters:
+- name: maven  
+  displayName: 'maven build'
+  type: string 
+  default: package
+    - compile
+    - deploy
+    - test 
+
+- name: java  
+  displayName:  'java for spring'
+  type: string 
+  default: '1.17'
+
+- name: 'mavenPOMFile'  
+  displayName:  'maven pom file to build'
+  type: string 
+  default: 'pom.xml'
+   
+
+
+
+
+  stages:
+- stage: Build
+  jobs:
+  - job: BuildJob
+    steps:
+    - task: Maven@4
+      inputs:
+        mavenPOMFile: ${{ parameters.mavenPOMFile }} 
+        publishJUnitResults: true
+        testResultsFiles: '**/surefire-reports/TEST-*.xml'
+        goals: ${{ parameter.maven }}
+        javaHomeOption:  ${{ parameter.java }}
+
