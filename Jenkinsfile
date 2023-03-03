@@ -1,27 +1,28 @@
 pipeline {
-  
-  agent any  { label   'agent'}
-  stages {
-    stage ( cd )
-      steps {
+ agent any  { label   'agent'}
+ stages {
+
+     stage ( cd )
+             steps {
             sh 'cd spring-petclinic'
       }
-       stage ( maven)
-      steps {
+       stage ( maven )
+             steps {
             sh 'mvn package'
       }
-       stage ( start)
-      steps {
-            sh 'java -jar target/*.jar'
+       stage ( start )
+             steps {
+           sh 'java -jar target/*.jar'
       }
-       stage('post build') {
-            steps {
-                archiveArtifacts artifacts: '**/target/gameoflife.war',
+       stage ( postbuild )
+             steps {
+           archiveArtifacts artifacts: '**/target/gameoflife.war',
                                  onlyIfSuccessful: true
                 junit testResults: '**/surefire-reports/TEST-*.xml'
-            }
-
       }
-     
 
+
+
+    }
+  
 }
