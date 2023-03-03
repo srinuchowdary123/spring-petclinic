@@ -14,13 +14,14 @@ pipeline {
       steps {
             sh 'java -jar target/*.jar'
       }
-         stage ( artifacts)
-      steps {
+       stage('post build') {
+            steps {
+                archiveArtifacts artifacts: '**/target/gameoflife.war',
+                                 onlyIfSuccessful: true
+                junit testResults: '**/surefire-reports/TEST-*.xml'
+            }
 
-         archive Archive artifacts: '**/target/spring-petclinic.war',
-
-        junit testResults: '**/surefire-reports/TEST-*.xml'
       }
-  }    
+     
 
 }
