@@ -1,25 +1,23 @@
 pipeline {
-    agent {label 'git'}
+    agent { label 'node'}
     stages {
-        stage ('cd') {
+        stage('vcs') {
             steps {
-                 sh 'cd spring-petclinic'
+                git url: 'https://github.com/spring-projects/spring-petclinic.git',
+                    branch: 'main'
             }
         }
-        stage ('maven') {
-            sh 'mvn package'
-        }
-         stage ('start') {
+        stage('package') {
             steps {
-               sh 'java -jar target/*.jar'  
-       }
-         stage ('start') {
+                sh 'mvn package'
+            }
+        } 
+        stage('publishresults') {
             steps {
-               archiveArtifacts artifacts: '**/target/gameoflife.war',
-                                 onlyIfSuccessful: true
+                   archiveArtifacts artifacts: '**/target/spring-petclinic-3.0.0-SNAPSHOT.jar',
+                                onlyIfSuccessful: true
                 junit testResults: '**/surefire-reports/TEST-*.xml'
-       }
-       
+            }
+        }
     }
 }
-    }
